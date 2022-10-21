@@ -3,8 +3,6 @@ import React from "react";
 import Tippy from "@tippyjs/react";
 
 const CellRenderer = (params) => {
-  console.log("params");
-
   const tippyRef = useRef();
   const [visible, setVisible] = useState(false);
   const show = () => setVisible(true);

@@ -1,4 +1,4 @@
-import CellRenderer from "./CellRenderer";
+import CellRenderer from "./renderers/CellRenderer";
 
 const Renderer = {
   CellRenderer: CellRenderer,

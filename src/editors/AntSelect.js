@@ -51,7 +51,7 @@ const AntSelect = forwardRef((props, ref) => {
       // showSearch
       // defaultValue="jack"
       size="large"
-      style={{ width: 400 }}
+      style={{ width: 200 }}
       value={value}
       onChange={handleChange}
       ref={refSelect}
