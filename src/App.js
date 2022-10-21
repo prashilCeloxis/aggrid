@@ -13,9 +13,6 @@ import {
   useState,
 } from "react";
 import "./App.css";
-import AntSelect from "./AntSelect";
-import AntInputField from "./AntInputField";
-import CellRenderer from "./CellRenderer";
 import fieldProperties from "./getEditor";
 import Renderer from "./getRenderer";
 
@@ -218,15 +215,14 @@ function App() {
     fetchData();
   }, []);
 
-  // if (!gridData) {
-  //   <h1>Loading....</h1>;
-  // }
-
   const columnTypes = useMemo(() => {
     return {
       editableColumn: {
-        cellStyle: (params) => {
-          if (params.value === "Harry" || params.value === "Sad") {
+        cellStyle: (value) => {
+          const field = value.colDef.field;
+          const oid = value.data[field + "_text"];
+
+          if (oid) {
             return { backgroundColor: "lightgrey" };
           }
         },
@@ -268,17 +264,16 @@ function App() {
             resizable: true,
           }}
           columnTypes={columnTypes}
-          // onCellEditingStarted={(value) => {
-          //   console.log("onCellEditingStarted", value);
-          // }}
-          // onCellEditingStopped={(value) => {
-          //   console.log("onCellEditingStopped", value);
-          // }}
           onCellClicked={(value) => {
-            // console.log("onCellClicked", value);
-            if (value.value === "Harry" || value.value === "Sad") {
-              return (value.colDef.editable = false);
-            }
+            // console.log("onCellClicked", value.data);
+            const field = value.colDef.field;
+            const oid = value.data[field + "_text"];
+
+            fetch(`http://localhost:1001/data/oid?id=${oid}`)
+              .then((res) => res.json())
+              .then((data) => {
+                return (value.colDef.editable = data.isEdit);
+              });
             return (value.colDef.editable = true);
           }}
           // pagination={true}

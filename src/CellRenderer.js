@@ -10,19 +10,21 @@ const CellRenderer = (params) => {
   const show = () => setVisible(true);
   const hide = () => setVisible(false);
 
-  const dropDownContent =
-    params.value === "Harry" || params.value === "Sad" ? (
-      <div className="menu-container">
-        <div
-          className="menu-item"
-          style={{ backgroundColor: "red", color: "white" }}
-        >
-          Not Edit
-        </div>
+  const field = params.colDef.field;
+  const oid = params.data[field + "_text"];
+
+  const dropDownContent = oid ? (
+    <div className="menu-container">
+      <div
+        className="menu-item"
+        style={{ backgroundColor: "red", color: "white" }}
+      >
+        Not Edit
       </div>
-    ) : (
-      ""
-    );
+    </div>
+  ) : (
+    ""
+  );
 
   return (
     <Tippy

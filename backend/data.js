@@ -42,9 +42,15 @@ const gridData = {
 
   data: [
     { select: "jack", name: "Happy", number: 10 },
-    { select: "Harry", name: "Sad", number: 3 },
+    {
+      select: "Harry",
+      name: "Sad",
+      number: 3,
+      select_text: "g1",
+      name_text: "g1",
+    },
     { select: "Sally", name: "Happy", number: 20 },
-    { select: "Mary", name: "Sad", number: 5 },
+    { select: "Mary", name: "Sad", number: 5, name_text: "g1" },
     { select: "John", name: "Happy", number: 15 },
     { select: "Jack", name: "Happy", number: 25 },
   ],
