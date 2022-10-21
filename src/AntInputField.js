@@ -21,7 +21,7 @@ const AntInputField = forwardRef((props, ref) => {
       // the final value to send to the grid, on completion of editing
       getValue() {
         // this simple editor doubles any value entered into the input
-        console.log("getValue Antd", value);
+        // console.log("getValue Antd", value);
         return value;
       },
 

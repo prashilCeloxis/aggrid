@@ -4,13 +4,14 @@ import Tippy from "@tippyjs/react";
 
 const CellRenderer = (params) => {
   console.log("params", params.value);
+
   const tippyRef = useRef();
   const [visible, setVisible] = useState(false);
   const show = () => setVisible(true);
   const hide = () => setVisible(false);
 
   const dropDownContent =
-    params.value === "Harry" ? (
+    params.value === "Harry" || params.value === "Sad" ? (
       <div className="menu-container">
         <div
           className="menu-item"
@@ -35,7 +36,9 @@ const CellRenderer = (params) => {
       interactive={true}
       placement="right"
     >
-      <span onDoubleClick={visible ? hide : show}>{params.value}</span>
+      <p onDoubleClick={visible ? hide : show} style={{ maxWidth: "350px" }}>
+        {params.value}
+      </p>
     </Tippy>
   );
 };

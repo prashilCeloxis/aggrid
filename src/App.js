@@ -13,8 +13,6 @@ import {
   useState,
 } from "react";
 import "./App.css";
-import { Input, Select } from "antd";
-import { Option } from "antd/lib/mentions";
 import AntSelect from "./AntSelect";
 import AntInputField from "./AntInputField";
 import CellRenderer from "./CellRenderer";
@@ -205,6 +203,7 @@ const NumericEditor = memo(
 
 function App() {
   const gridRef = useRef();
+
   const [rowData] = useState([
     { select: "jack", name: "Happy", number: 10 },
     { select: "Harry", name: "Sad", number: 3 },
@@ -220,19 +219,17 @@ function App() {
   //   return params.data.year === editableYear;
   // };
 
-  // const columnTypes = useMemo(() => {
-  //   return {
-  //     // editableColumn: {
-  //     //   editable: (params) => {
-  //     //     return isCellEditable(params);
-  //     //   },
-  //     cellStyle: (params) => {
-  //       if (params.data.number === 10) {
-  //         return { backgroundColor: "lightBlue" };
-  //       }
-  //     },
-  //   };
-  // }, []);
+  const columnTypes = useMemo(() => {
+    return {
+      editableColumn: {
+        cellStyle: (params) => {
+          if (params.value === "Harry" || params.value === "Sad") {
+            return { backgroundColor: "lightgrey" };
+          }
+        },
+      },
+    };
+  }, []);
 
   // const setEditableYear = useCallback((year) => {
   //   // editableYear = year;
@@ -251,14 +248,23 @@ function App() {
       width: 200,
       // initialWidth: 400,
       // flex: 2,
+      // cellStyle: (params) => {
+      //   if (params.value === "Harry") {
+      //     return { color: "black", backgroundColor: "lightgrey" };
+      //   }
+      //   return null;
+      // },
+      type: "editableColumn",
     },
     {
       headerName: "Name",
       field: "name",
       cellEditor: AntInputField,
+      cellRenderer: CellRenderer,
       cellEditorPopup: true,
       // editable: true,
       width: 280,
+      type: "editableColumn",
     },
     {
       headerName: "Doubling",
@@ -268,6 +274,7 @@ function App() {
       // editable: true,
       // editable: (params) => params.data.number !== 10,
       width: 300,
+      type: "editableColumn",
     },
   ]);
 
@@ -291,8 +298,7 @@ function App() {
             filter: true,
             resizable: true,
           }}
-          // columnTypes={columnTypes}
-
+          columnTypes={columnTypes}
           // onCellEditingStarted={(value) => {
           //   console.log("onCellEditingStarted", value);
           // }}
@@ -301,11 +307,13 @@ function App() {
           // }}
           onCellClicked={(value) => {
             // console.log("onCellClicked", value);
-            if (value.value === "Harry") {
+            if (value.value === "Harry" || value.value === "Sad") {
               return (value.colDef.editable = false);
             }
             return (value.colDef.editable = true);
           }}
+          // pagination={true}
+          // paginationPageSize={2}
         />
       </div>
     </div>
