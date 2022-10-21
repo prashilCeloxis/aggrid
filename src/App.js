@@ -16,6 +16,8 @@ import "./App.css";
 import AntSelect from "./AntSelect";
 import AntInputField from "./AntInputField";
 import CellRenderer from "./CellRenderer";
+import fieldProperties from "./getEditor";
+import Renderer from "./getRenderer";
 
 const KEY_BACKSPACE = "Backspace";
 const KEY_DELETE = "Delete";
@@ -202,22 +204,23 @@ const NumericEditor = memo(
 );
 
 function App() {
-  const gridRef = useRef();
+  const [gridData, setGridData] = useState();
 
-  const [rowData] = useState([
-    { select: "jack", name: "Happy", number: 10 },
-    { select: "Harry", name: "Sad", number: 3 },
-    { select: "Sally", name: "Happy", number: 20 },
-    { select: "Mary", name: "Sad", number: 5 },
-    { select: "John", name: "Happy", number: 15 },
-    { select: "Jack", name: "Happy", number: 25 },
-  ]);
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetch("http://localhost:1001/data")
+        .then((res) => res.json())
+        .then((data) => {
+          console.log("data", data);
+          setGridData(data);
+        });
+    };
+    fetchData();
+  }, []);
 
-  // let editableYear = 2012;
-
-  // const isCellEditable = (params) => {
-  //   return params.data.year === editableYear;
-  // };
+  // if (!gridData) {
+  //   <h1>Loading....</h1>;
+  // }
 
   const columnTypes = useMemo(() => {
     return {
@@ -231,52 +234,18 @@ function App() {
     };
   }, []);
 
-  // const setEditableYear = useCallback((year) => {
-  //   // editableYear = year;
-  //   // Redraw to re-apply the new cell style
-  //   gridRef.current.api.redrawRows();
-  // }, []);
-
-  const columnDefs = useMemo(() => [
-    {
-      headerName: "Select Name",
-      field: "select",
-      cellEditor: AntSelect,
-      cellRenderer: CellRenderer,
-      cellEditorPopup: true,
-      // editable: true,
-      width: 200,
-      // initialWidth: 400,
-      // flex: 2,
-      // cellStyle: (params) => {
-      //   if (params.value === "Harry") {
-      //     return { color: "black", backgroundColor: "lightgrey" };
-      //   }
-      //   return null;
-      // },
-      type: "editableColumn",
-    },
-    {
-      headerName: "Name",
-      field: "name",
-      cellEditor: AntInputField,
-      cellRenderer: CellRenderer,
-      cellEditorPopup: true,
-      // editable: true,
-      width: 280,
-      type: "editableColumn",
-    },
-    {
-      headerName: "Doubling",
-      field: "number",
-      cellEditor: DoublingEditor,
-      cellEditorPopup: true,
-      // editable: true,
-      // editable: (params) => params.data.number !== 10,
-      width: 300,
-      type: "editableColumn",
-    },
-  ]);
+  let column = gridData?.columns.map((ele) => {
+    const column = {
+      ...ele,
+    };
+    if (ele.cellEditor) {
+      column["cellEditor"] = fieldProperties[ele.cellEditor];
+    }
+    if (ele.cellRenderer) {
+      column["cellRenderer"] = Renderer[ele.cellRenderer];
+    }
+    return column;
+  });
 
   return (
     <div style={{ width: "100%", height: "100%" }}>
@@ -288,8 +257,8 @@ function App() {
         className="ag-theme-alpine"
       >
         <AgGridReact
-          columnDefs={columnDefs}
-          rowData={rowData}
+          columnDefs={column}
+          rowData={gridData?.data}
           defaultColDef={{
             editable: true,
             sortable: true,
@@ -321,3 +290,49 @@ function App() {
 }
 
 export default App;
+
+// const columnDefs = useMemo(() => [
+//   {
+//     headerName: "Select Name",
+//     field: "select",
+//     cellEditor: AntSelect,
+//     cellRenderer: CellRenderer,
+//     cellEditorPopup: true,
+//     // editable: true,
+//     width: 200,
+//     // initialWidth: 400,
+//     // flex: 2,
+//     // cellStyle: (params) => {
+//     //   if (params.value === "Harry") {
+//     //     return { color: "black", backgroundColor: "lightgrey" };
+//     //   }
+//     //   return null;
+//     // },
+//     type: "editableColumn",
+//   },
+//   {
+//     headerName: "Name",
+//     field: "name",
+//     cellEditor: AntInputField,
+//     cellRenderer: CellRenderer,
+//     cellEditorPopup: true,
+//     // editable: true,
+//     width: 280,
+//     type: "editableColumn",
+//   },
+//   {
+//     headerName: "Doubling",
+//     field: "number",
+//     cellEditor: DoublingEditor,
+//     cellEditorPopup: true,
+//     // editable: true,
+//     // editable: (params) => params.data.number !== 10,
+//     width: 300,
+//     type: "editableColumn",
+//   },
+// ]);
+
+// const [rowData] = useState(gridData?.data);
+
+// let columns = gridData?.columns;
+// console.log("columns", columns);
